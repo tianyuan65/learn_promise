@@ -11,20 +11,18 @@
         <h2 class="page-header">Promise 初体验</h2>
         <button class="btn btn-primary" id="btn">点击抽奖</button>
     </div>
+
     <script>
         // 生成随机数
         function rand(m,n) {
-            return Math.ceil(Math.random() * (n-m+1)) + m-1;
+            return Math.ceil(Math.random() * (n-m+1)) + m-1            
         }
+
         /*
             点击按钮，2s后显示是否中奖(30%概率中奖)
-                若中奖弹出      恭喜恭喜，奖品文10万RMB劳斯莱斯优惠券
-                若未中奖弹出    再接再厉
+                若中奖弹出      恭喜恭喜，奖品为10万晶片/羽毛笔
+                若未中奖弹出    马哈鱼/光头去死
          */
-
-        // 获取元素对象
-        const btn=document.getElementById('btn')
-        
     </script>
 </body>
 </html>
