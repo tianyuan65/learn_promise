@@ -29,6 +29,24 @@
                     * ```
                         setTimeout(()=>{},2000)
                       ```
+        * 2.1.2 promise的状态改变
+            * PromiseState 的状态
+                * 实例对象中的一个属性，叫[PromiseState]，它有三个值：
+                    * rending 未决定的/初始化的默认值就是它
+                    * resolved / funfilled 成功
+                    * rejected 失败
+                * 状态是什么？
+                    * 可以通过两个参数(resolve和reject)改为成功和失败。状态是promise对象当中的一个属性，准确来说promise实例对象当中的属性，这个属性名叫PromiseState
+                * 状态改变的两种情况：
+                    * 1. pending变为resolved
+                    * 2. pending变为rejected
+                    * 说明：
+                        * 只有这两种，且一个promise对象只能改变一次，也就是说状态值从pending变成resolved/rejected之后不能再变了
+                        * 无论变为成功还是失败，都会有一个结果数据
+                        * 成功的结果数据一般称为value,失败的结果数据一般称为reason
+                        * 不能由成功直接变为失败，也不能直接从失败变为成功
+
+
     * 2.2为什么要用Promise？
         * 2.2.1 指定回调函数的方式更加灵活
             * 1. 旧的：必须在启动异步任务前指定
@@ -44,3 +62,5 @@
 
 ## 总结
 * Promise是一个构造函数，所以可以对其进行对象的实例化，所以可以```const p=new Promise()```这样使用。而Promise在实例化的时候需要接收一个参数，这个参数是函数类型的值，且这个当参数的函数还有两个形参，分别是resolve和reject
+* 后续想要使用promise，不需要对每一个方法进行手动封装，可以借助 util.promisify 方法，将原来的回调函数风格的方法转变成promise风格的函数
+* 
