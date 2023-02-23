@@ -48,8 +48,9 @@
             * Promise对象的值 [PromiseResult]，实例对象中的另一个属性
                 * 这里存储的是promise对象异步任务*成功/失败*的结果
                 * resolve/reject 这两个函数可以对实例对象中的[PromiseResult]这个值进行修改或赋值的。在这两个函数中设置完毕后，可以在后续then方法回调(value和reason回调)当中把值取出来，并进行相应的操作
-
-
+        * 2.1.3 promise的基本流程
+            * ![promise基本流程图](images/promise%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B%E5%9B%BE.PNG)
+            * ![promise基本流程详细版](images/promise%E8%BF%90%E8%A1%8C%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B%E8%AF%A6%E7%BB%86%E7%89%88.PNG)
     * 2.2为什么要用Promise？
         * 2.2.1 指定回调函数的方式更加灵活
             * 1. 旧的：必须在启动异步任务前指定
@@ -62,6 +63,50 @@
                 * 不便于异常处理
             * 3. 解决方案？
                 * promise链式调用
+    * 如何使用Promise？
+        * 2.3.1 API
+            * 1. Promise构造函数：Promise(executor){}
+                * 可以通过new Promise()来实例化对象，实例化之后需要接收一个参数，这个参数的类型：
+                    * 1) executor函数：执行器 (resolve,reject)=>{}
+                    * 2) resolve函数：内部定义成功时我们调用的函数 value=>{}
+                    * 3) reject函数：内部定义失败时我们调用的函数 reason=>{}
+                    * 说明：executor会在Promise内部立即同步调用，异步操作在执行器中执行
+            * 2. Promise.prototype.then方法：(onResolved,onRejected)=>{}
+                * 1) onResolved函数：成功的回调函数 (value)=>{}
+                * 2) onRejected函数：失败的回调函数 (reason)=>{}
+                * 说明：指定用于得到成功value的成功回调和用于得到失败reason的失败回调返回一个新的promise对象
+            * 3. Promise.prototype.catch方法：(onRejected)=>{}  --专门用来指定失败的回调函数
+                * 1) onRejected函数：失败的回调函数 (reason)=>{}
+                * 说明：then()的语法糖，相当于：then(undefined,onRejected)
+            * 4. Promise.resolve方法：(value)=>{}
+                * 1) value：成功的数据或promise对象
+                * 说明：
+                    * 返回一个成功/失败的promise对象，它的作用就是快速得到promise对象，并且能封装一个值，还能把这个值转化为promise对象
+                    * 相较于then/catch方法，resolve方法是属于Promise这个函数对象的，不属于实例对象
+                    * 如果传入的参数为 非promise类型的对象，则返回的结果为成功promise对象
+                        * ```
+                            let p1=Promise.resolve(undefined)
+                            console.log(p1);
+                          ```
+                        * ![写了什么就输出什么](images/%E5%86%99%E4%BA%86%E4%BB%80%E4%B9%88%E5%80%BC%E5%B0%B1%E8%BE%93%E5%87%BA%E4%BB%80%E4%B9%88.PNG)
+                    * 如果传入的参数为promise对象，则参数的结果决定了resolve的结果
+                        * ```
+                            let p2=Promise.resolve(new Promise((resolve,reject)=>{
+                                // resolve('OK')
+                                reject('error')
+                            }))
+                            console.log(p2)
+                          ```
+                        * ![成功](images/%E6%A0%B9%E6%8D%AE%E5%8F%82%E6%95%B0%E4%B8%BApromise%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%BB%93%E6%9E%9C%E5%86%B3%E5%AE%9Aresolve%E6%96%B9%E6%B3%95%E7%9A%84%E7%BB%93%E6%9E%9C(%E6%88%90%E5%8A%9F).PNG)
+                        * ![失败](images/%E6%A0%B9%E6%8D%AE%E5%8F%82%E6%95%B0%E4%B8%BApromise%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%BB%93%E6%9E%9C%E5%86%B3%E5%AE%9Aresolve%E6%96%B9%E6%B3%95%E7%9A%84%E7%BB%93%E6%9E%9C(%E5%A4%B1%E8%B4%A5).PNG)
+            * 5. Promise.reject方法：(reason)=>{}
+                * 1) reason：失败的原因
+                * 说明：返回一个失败的promise对象
+            * 6. Promise.all方法：(promises)=>{}
+                * 1) promises：包含n个promise的数组
+                * 说明：返回一个新的promise，只有所有的promise否成功才成功，只要有一个失败了就直接返回失败
+            * 7. Promie.race方法：(promise)=>{}
+                * 1) 
 
 ## 总结
 * Promise是一个构造函数，所以可以对其进行对象的实例化，所以可以```const p=new Promise()```这样使用。而Promise在实例化的时候需要接收一个参数，这个参数是函数类型的值，且这个当参数的函数还有两个形参，分别是resolve和reject
