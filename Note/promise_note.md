@@ -20,7 +20,7 @@
                     * ```
                       require('fs').readFile('./index.html',(err,data)=>{})
                       ```
-                * 数据库操作，如:MongoDB，马赛ko等数据库操作
+                * 数据库操作，如:MongoDB，Mysql(马赛ko)等数据库操作
                 * AJAX网络请求
                     * ```
                         $.get('/server',(data)=>{})
@@ -128,10 +128,60 @@
                     * 上述代码和图片中比较特殊的就是p3对象，p3对象的reject方法中传递的参数是promise对象，并且这个做参数的promise对象执行的是其成功的参数。但最后的结果并不会有所变化，依旧输出失败的结果(结果为Promise，就是做参数的那个Promise)，PromiseState依旧是rejected，
             * 6. Promise.all方法：(promises)=>{}
                 * 1) promises：包含n个promise的数组
-                * 说明：返回一个新的promise，只有所有的promise否成功才成功，只要有一个失败了就直接返回失败
+                * 说明：返回一个新的promise(其状态由数组中的promise的状态，也就是由promises来决定)，只有所有的promise否成功才成功，只要有一个失败了就直接返回失败，而且成功的结果是每一个promise对象他们成功的结果组成的数组，而失败的结果是这个数组当中失败的那一个对象的结果
+                * 数组里的每一个promise对象都是成功，则返回的promise对象才是成功，但凡合格数组里有一个是失败的对象，最后也只返回失败的对象的结果
+                    * ```
+                        let p1=new Promise((resolve,reject)=>{
+                            resolve('ok')
+                        })
+                        let p2=Promise.reject('歪了歪了')
+                        let p3=Promise.resolve('出了出了！！！！！')
+
+                        const result=Promise.all([p1,p2,p3])
+                        console.log(result);
+                      ```
+                    * ![看上面的代码，返回的结果是成功](images/%E6%95%B0%E7%BB%84%E9%87%8C%E7%9A%84%E5%AF%B9%E8%B1%A1%E9%83%BD%E6%98%AF%E6%88%90%E5%8A%9F%E7%9A%84%E7%BB%93%E6%9E%9C.PNG)
+                    * ```
+                        let p1=new Promise((resolve,reject)=>{
+                            resolve('ok')
+                        })
+                        let p2=Promise.reject('歪了歪了')
+
+                        let p3=Promise.resolve('出了出了！！！！！')
+
+                        const result=Promise.all([p1,p2,p3])
+                        console.log(result);
+                      ```
+                    * ![看上面的代码，这回返回的是失败，且返回结果是结果为失败的对象的结果](images/%E6%95%B0%E7%BB%84%E9%87%8C%E6%9C%89%E7%BB%93%E6%9E%9C%E4%B8%BA%E5%A4%B1%E8%B4%A5%E7%9A%84%E5%AF%B9%E8%B1%A1%20%E5%85%B7%E4%BD%93%E7%9C%8BPromiseResult.PNG)
             * 7. Promie.race方法：(promise)=>{}
-                * 1) promises：包含n个promise的数据
-                * 说明：返回一个新的promise，第一个完成的promise的结果状态就是最终的结果状态
+                * 1) promises：包含n个promise的数组
+                * 说明：返回一个新的promise，第一个完成的promise的结果状态就是最终的结果状态，谁先改变状态，谁就改变race方法的返回结果
+                    * ```
+                        let p1=new Promise((resolve,reject)=>{
+                            resolve('ok')
+                        })
+                        let p2=Promise.resolve('Success')
+                        let p3=Promise.resolve('出了出了！！！！！')
+
+                        // 调用race方法
+                        const result=Promise.race([p1,p2,p3])
+                        console.log(result);
+                      ```
+                    * ![谁先改变状态，谁就改变返回结果，这里返回的结果是p1](images/%E8%B0%81%E5%85%88%E6%94%B9%E5%8F%98%E7%8A%B6%E6%80%81%EF%BC%8C%E8%B0%81%E5%B0%B1%E6%94%B9%E5%8F%98%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C.PNG)
+                    * ```
+                        let p1=new Promise((resolve,reject)=>{
+                            setTimeout(()=>{
+                                resolve('ok')
+                            },1000)
+                            })
+                            let p2=Promise.resolve('Success')
+                            let p3=Promise.resolve('出了出了！！！！！')
+
+                            // 调用race方法
+                            const result=Promise.race([p1,p2,p3])
+                            console.log(result);
+                      ```
+                    * ![添加一个异步任务，一秒后才输出，此时第一个改变状态的就不是p1](images/%E6%B7%BB%E5%8A%A0%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1%E5%90%8E%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%94%B9%E5%8F%98%E7%8A%B6%E6%80%81%E7%9A%84%E5%B0%B1%E4%B8%8D%E6%98%AFp1%E4%BA%86.PNG)
 
 ## 总结
 * Promise是一个构造函数，所以可以对其进行对象的实例化，所以可以```const p=new Promise()```这样使用。而Promise在实例化的时候需要接收一个参数，这个参数是函数类型的值，且这个当参数的函数还有两个形参，分别是resolve和reject
