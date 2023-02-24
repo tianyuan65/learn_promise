@@ -17,19 +17,22 @@
         // 接口地址  https://api.apiopen.top/getJoke
         // 获取元素对象
         const btn=document.querySelector('#btn')
-
+    // func call back = 24~ 
         // 绑定单击事件
         btn.addEventListener('click',function(){
             // 创建Promise
+            console.log(1);
             const p=new Promise((resolve,reject)=>{
+                console.log(2);
                 // 1. 创建对象
                 const xhr=new XMLHttpRequest()
                 // 2. 初始化
-                xhr.open('GET','www.baidu.com')
+                xhr.open('GET','https://developer.mozilla.org/zh-CN/docs/Web/JavaScript')
                 // 3. 发送
                 xhr.send()
                 // 4. 处理响应结果
                 xhr.onreadystatechange=function(){
+                    console.log(2.5);
                     if(xhr.readyState===4){
                         // 判断响应状态码 2xx
                         if(xhr.status>=200 && xhr.status<300){
@@ -43,7 +46,9 @@
                 }
             })
             // 调用then方法
+            console.log(3);
             p.then(value=>{
+                console.log(4);
                 console.log(value);
             },reason=>{
                 console.warn(reason)
