@@ -32,7 +32,7 @@
         * 2.1.2 promise的状态改变
             * PromiseState 的状态
                 * 实例对象中的一个属性，叫[PromiseState]，它有三个值：
-                    * rending 未决定的/初始化的默认值就是它
+                    * pending 未决定的/初始化的默认值就是它
                     * resolved / funfilled 成功
                     * rejected 失败
                 * 状态是什么？
@@ -51,7 +51,7 @@
         * 2.1.3 promise的基本流程
             * ![promise基本流程图](images/promise%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B%E5%9B%BE.PNG)
             * ![promise基本流程详细版](images/promise%E8%BF%90%E8%A1%8C%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B%E8%AF%A6%E7%BB%86%E7%89%88.PNG)
-    * 2.2为什么要用Promise？
+    * 2.2 为什么要用Promise？
         * 2.2.1 指定回调函数的方式更加灵活
             * 1. 旧的：必须在启动异步任务前指定
             * 2. promise：启动异步任务=>返回promise对象=>给promise对象绑定回调函数(甚至可以在异步任务结束后指定单/多个)
@@ -63,7 +63,7 @@
                 * 不便于异常处理
             * 3. 解决方案？
                 * promise链式调用
-    * 如何使用Promise？
+    * 2.3 如何使用Promise？
         * 2.3.1 API
             * 1. Promise构造函数：Promise(executor){}
                 * 可以通过new Promise()来实例化对象，实例化之后需要接收一个参数，这个参数的类型：
@@ -182,6 +182,19 @@
                             console.log(result);
                       ```
                     * ![添加一个异步任务，一秒后才输出，此时第一个改变状态的就不是p1](images/%E6%B7%BB%E5%8A%A0%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1%E5%90%8E%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%94%B9%E5%8F%98%E7%8A%B6%E6%80%81%E7%9A%84%E5%B0%B1%E4%B8%8D%E6%98%AFp1%E4%BA%86.PNG)
+        * 2.3.2 promise的几个关键问题
+            * 1. 如何改变promise的状态？
+                * 1) resolve(value)：如果当前是pending就会变为resolved
+                * 2) reject(reason)：如果当前是pending就会变为rejected
+                * 3) 抛出异常：如果当前是pending就会变为rejected
+            * 2. 一个promise指定多个成功/失败回调函数，都会调用吗？
+                * 当promise改变为对应状态时会调用
+            * 3. 改变promise状态和指定回调函数谁先谁后？
+                * 1) 都有可能，征程情况下是先指定回调再改变状态，但也可以先改变状态再指定回调
+                * 2) 如何先改状态再指定回调？
+                    * ① 在执行器中直接调用resolve()/reject()
+                    * ② 延迟更长时间才调用then()
+                * 3) 什么时候才能得到数据？
 
 ## 总结
 * Promise是一个构造函数，所以可以对其进行对象的实例化，所以可以```const p=new Promise()```这样使用。而Promise在实例化的时候需要接收一个参数，这个参数是函数类型的值，且这个当参数的函数还有两个形参，分别是resolve和reject
