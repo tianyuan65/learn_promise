@@ -187,8 +187,25 @@
                 * 1) resolve(value)：如果当前是pending就会变为resolved
                 * 2) reject(reason)：如果当前是pending就会变为rejected
                 * 3) 抛出异常：如果当前是pending就会变为rejected
-            * 2. 一个promise指定多个成功/失败回调函数，都会调用吗？
-                * 当promise改变为对应状态时会调用
+            * 2. 一个promise指定多个成功/失败回调函数，都会调用吗？(翻译：如果使用then方法为一个promise对象指定多个回调，这些回调是不是都会执行？)
+                * *这里的指定回调用谁指定？ then方法*
+                * 当promise改变为对应状态时会调用(如果为一个promise对象指定多个回调，当它的状态改变之后，与之对应的回调函数就都会执行)
+                    * ```
+                        let p=new Promise((resolve,reject)=>{
+                            resolve('OK')
+                        })
+                        
+                        // 指定回调  -1
+                        p.then(value=>{
+                            console.log(value);
+                        })
+
+                        // 指定回调  -2
+                        p.then(value=>{
+                            alert(value)
+                        })
+                      ```
+                    * ![状态改变后，对应的回调会依次执行，但若状态没有改变，对应的回调就不会执行](images/%E7%8A%B6%E6%80%81%E6%94%B9%E5%8F%98%E5%90%8E%E4%B8%8E%E4%B9%8B%E5%AF%B9%E5%BA%94%E7%9A%84%E5%9B%9E%E8%B0%83%E9%83%BD%E4%BC%9A%E6%89%A7%E8%A1%8C.PNG)
             * 3. 改变promise状态和指定回调函数谁先谁后？
                 * 1) 都有可能，征程情况下是先指定回调再改变状态，但也可以先改变状态再指定回调
                 * 2) 如何先改状态再指定回调？
