@@ -250,8 +250,33 @@
                     * ③ 如果返回的是另一个新promise，此promise的结果就会成为新promise的结果
                         * ![PromiseState:fulfilled/rejected,PromiseResult:写了啥就是啥](images/%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C%E6%98%AF%E6%96%B0%E7%9A%84promise.PNG)
             * 5. promise如何串联多个操作任务？
-                * 1) promise的then()返回一个新的promise，可以开成then()的链式调用
+                * 1) promise的then()返回结果是一个新的promise，可以开成then()的链式调用
                 * 2) 通过then的链式调用串连多个同步/异步任务
+                * ```
+                    let p=new Promise((resolve,reject)=>{
+                        setTimeout(()=>{
+                            resolve('OK')
+                        },1000)
+                    })
+
+                    p.then(value=>{
+                        return new Promise((resolve,reject)=>{
+                            resolve('success')
+                        })
+                    }).then(value=>{
+                        console.log(value);
+                    }).then(value=>{
+                        console.log(value);  //undefined
+                    })
+                  ```
+                * *注释：为什么最后一个then方法中回调函数输出的结果是是undefined？*
+                    * 看它上一个then方法中回调函数返回的结果是什么？没写，没写就是undefined，且undefined也不是一个promise类型的对象，所以上一个then方法返回结果就是一个成功的promise，成功的结果就是undefined。其原理就是then方法的返回结果是一个promise对象
+            * 6. promise异常传透？
+                * 1) 当使用promise的then链式调用时，可以在最后指定失败的回调
+                * 2) 前面任何操作出了异常，都会传到最后失败的回调中处理
+            * 7. 中断promise链？
+                * 1) 当使用promise的then链式调用时，在中间中断，不再调用后面的回调函数
+                * 2) 办法：在回调函数中返回一个pending状态的promise
 
 ## 总结
 * Promise是一个构造函数，所以可以对其进行对象的实例化，所以可以```const p=new Promise()```这样使用。而Promise在实例化的时候需要接收一个参数，这个参数是函数类型的值，且这个当参数的函数还有两个形参，分别是resolve和reject
