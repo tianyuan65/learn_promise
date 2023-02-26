@@ -311,11 +311,32 @@
                         }).catch(reason=>{
                             console.warn(reason);
                         })
-                    ```
-                * 即便是在中间的环节(就是在某一个回调函数当中)出现错误，比如抛出错误/返回失败的promise，都不必管，只需在最后使用catch方法来实现对失败的结果的处理。
+                      ```
+                    * 即便是在中间的环节(就是在某一个回调函数当中)出现错误，比如抛出错误/返回失败的promise，都不必管，只需在最后使用catch方法来实现对失败的结果的处理。 
             * 7. 中断promise链？
                 * 1) 当使用promise的then链式调用时，在中间中断，不再调用后面的回调函数
                 * 2) 办法：在回调函数中返回一个pending状态的promise
+                * ```
+                    let p=new Promise((resolve,reject)=>{
+                        setTimeout(()=>{
+                            resolve('OK')
+                            // reject('error')
+                        },1000)
+                    })
+
+                    p.then(value=>{
+                        console.log(111);
+                        // 有且只有一种方式
+                        return new Promise(()=>{})
+                    }).then(value=>{
+                        console.log(222);
+                    }).then(value=>{
+                        console.log(333);  
+                    }).catch(reason=>{
+                        console.warn(reason);
+                    })
+                  ```
+                * 上述代码执行后，输出的只有111，因为只有在回调函数中返回一个未定义状态(pending状态)的promise对象，下面then方法中的回调函数才不能对pending状态的promise对象进行调用，最终就只会输出我想要输出的结果
 
 ## 总结
 * Promise是一个构造函数，所以可以对其进行对象的实例化，所以可以```const p=new Promise()```这样使用。而Promise在实例化的时候需要接收一个参数，这个参数是函数类型的值，且这个当参数的函数还有两个形参，分别是resolve和reject
