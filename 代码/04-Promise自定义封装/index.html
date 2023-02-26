@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promise-封装 | 1-初始结构搭建</title>
+    <script src="./promise.js"></script>
+</head>
+<body>
+    <script>
+        // 这里的resolve和reject是形参，名字可以随意
+            // 没有硬性要求和构造函数里的两个函数名保持一致，但为了不混淆，建议我自己还是乖乖该写啥就写啥
+        let p=new Promise((resolve,reject)=>{
+            // resolve('OK')
+            reject('error')
+        })
+        console.log(p);
+
+        // p.then(value=>{
+        //     // 全局的promise对象实例化后出来的
+        //     console.log(value);
+        // },reason=>{
+        //     console.warn(reason);
+        // })
+    </script>
+</body>
+</html>

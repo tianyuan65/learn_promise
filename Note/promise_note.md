@@ -338,6 +338,16 @@
                   ```
                 * 上述代码执行后，输出的只有111，因为只有在回调函数中返回一个未定义状态(pending状态)的promise对象，下面then方法中的回调函数才不能对pending状态的promise对象进行调用，最终就只会输出我想要输出的结果
 
+* **第三章：自定义(手写)Promise**
+    * 3.1 定义整体结构
+        * 1. 初始结构搭建
+            * 在框架文件(html文件)中定义一个promise对象，并在js文件中声明一个名为Promise的构造函数。在构造函数中传递一个形参executor，并在函数内调用```executor(resolve,reject)```,因为需要和框架文件中的执行器函数进行同步调用，最后添加then()，以保证正常运行```Promise.prototype.then=function(onResolved,onRejected){}```
+        * 2. resolve与reject结构搭建
+            * 在构造函数中声明resolve函数和reject函数，值得注意的是，这两个函数都是实参，都是独立的函数，可以自由命名，**但是为了防止混淆，还是该写啥写啥(这是给自己说的，记住了！！！)**
+        * 3. resolve与reject代码实现
+            * 众所周知，这两个函数有两个属性，PromiseState和PromiseResult，需要给这两个函数各自设置promise对象改变状态时，需要调用其中哪一个函数，并输出相对应的状态和结果。在此处需要注意的是，使用this来添加属性的时候，要格外留意this指向的是谁，在此处this指向的是Window，所以需要保存一下实例对象的this值，```const self=this;```，这样在resolve/reject函数被调用的时候，对象的状态和结果值才不会是初始状态和初始结果值
+
+
 ## 总结
 * Promise是一个构造函数，所以可以对其进行对象的实例化，所以可以```const p=new Promise()```这样使用。而Promise在实例化的时候需要接收一个参数，这个参数是函数类型的值，且这个当参数的函数还有两个形参，分别是resolve和reject
 * 后续想要使用promise，不需要对每一个方法进行手动封装，可以借助 util.promisify 方法，将原来的回调函数风格的方法转变成promise风格的函数
