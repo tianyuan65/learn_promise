@@ -244,8 +244,14 @@
                 * 1) 简单表达：由then()指定的回调函数执行的结果决定
                 * 2) 详细表达：
                     * ① 如果抛出异常，新promise变为rejected，reason为抛出的异常
-                    * ② 如果返回的是非promise的人一直，新promise变为resolved，value为返回的值
+                        * ![PromiseState:rejected,PromiseResult:写了啥就是啥](images/%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8%20new%20promiseState%3Drejected.PNG)
+                    * ② 如果返回的是非promise的任意值，新promise变为resolved，value为返回的值
+                        * ![PromiseState:funfilled,PromiseResult:写了啥就是啥](images/%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C%E6%98%AF%E9%9D%9Epromise%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%AF%B9%E8%B1%A1.PNG)
                     * ③ 如果返回的是另一个新promise，此promise的结果就会成为新promise的结果
+                        * ![PromiseState:fulfilled/rejected,PromiseResult:写了啥就是啥](images/%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C%E6%98%AF%E6%96%B0%E7%9A%84promise.PNG)
+            * 5. promise如何串联多个操作任务？
+                * 1) promise的then()返回一个新的promise，可以开成then()的链式调用
+                * 2) 通过then的链式调用串连多个同步/异步任务
 
 ## 总结
 * Promise是一个构造函数，所以可以对其进行对象的实例化，所以可以```const p=new Promise()```这样使用。而Promise在实例化的时候需要接收一个参数，这个参数是函数类型的值，且这个当参数的函数还有两个形参，分别是resolve和reject
