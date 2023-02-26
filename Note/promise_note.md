@@ -273,7 +273,46 @@
                     * 看它上一个then方法中回调函数返回的结果是什么？没写，没写就是undefined，且undefined也不是一个promise类型的对象，所以上一个then方法返回结果就是一个成功的promise，成功的结果就是undefined。其原理就是then方法的返回结果是一个promise对象
             * 6. promise异常传透？
                 * 1) 当使用promise的then链式调用时，可以在最后指定失败的回调
+                    * ```
+                        let p=new Promise((resolve,reject)=>{
+                            setTimeout(()=>{
+                                // resolve('OK')
+                                reject('error')
+                            },1000)
+                        })
+
+                        p.then(value=>{
+                            console.log(111);
+                        }).then(value=>{
+                            console.log(222);
+                        }).then(value=>{
+                            console.log(333);  
+                        }).catch(reason=>{
+                            console.warn(reason);
+                        })
+                      ```
+                    * 异步任务中更改的状态会在最后的catch方法中作为结果输出，中间的环节不必指定失败的回调，只需在最后指定失败的回调，即可处理失败的结果，这就叫异常穿透。
                 * 2) 前面任何操作出了异常，都会传到最后失败的回调中处理
+                    * ```
+                        let p=new Promise((resolve,reject)=>{
+                            setTimeout(()=>{
+                                resolve('OK')
+                                // reject('error')
+                            },1000)
+                        })
+
+                        p.then(value=>{
+                            // console.log(111);
+                            throw '失败'
+                        }).then(value=>{
+                            console.log(222);
+                        }).then(value=>{
+                            console.log(333);  
+                        }).catch(reason=>{
+                            console.warn(reason);
+                        })
+                    ```
+                * 即便是在中间的环节(就是在某一个回调函数当中)出现错误，比如抛出错误/返回失败的promise，都不必管，只需在最后使用catch方法来实现对失败的结果的处理。
             * 7. 中断promise链？
                 * 1) 当使用promise的then链式调用时，在中间中断，不再调用后面的回调函数
                 * 2) 办法：在回调函数中返回一个pending状态的promise
