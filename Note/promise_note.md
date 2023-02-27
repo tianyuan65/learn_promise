@@ -361,6 +361,10 @@
         * 4. 抛出异常改变状态
             * 在promise对象中抛出一个错误，想要正常输出抛出错误后的promise对象的状态和结果值，就需要在Promise构造函数中调用/执行trycatch函数，将同步调用执行器函数的方法移入。在catch中需要修改promise对象的状态为失败，在此调用reject，且promise对象中抛出的数据(```throw 'Err'```中的Err)就是promise对象失败的结果值，这个结果值会被传递给参数error(就是catch的参数位置上的那个)，所以最终在设置结果的时候，把error交给reject就可以了```reject(error)```
                 * ![抛出异常改变状态后输出的对象状态和对象结果值](images/%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8%E6%94%B9%E5%8F%98%E7%8A%B6%E6%80%81.PNG)
+            * 为了和上面的作对比，把内置的引入Promise构造函数的代码注销掉，依然会输出promise对象失败的结果状态和结果值。
+                * ![注销引入的Promise构造函数](images/%E6%B3%A8%E9%94%80%E5%BC%95%E5%85%A5Promise%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%90%8E.PNG)
+                * 图里可见，PromiseState和PromiseResult被两个中括号包裹，为什么？
+                    * 两个中括号表明，这个属性是这个对象内置的，是对象内部的，这些属性无法通过js代码直接对其进行操作
 
 
 ## 总结
