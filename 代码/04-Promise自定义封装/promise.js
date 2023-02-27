@@ -23,8 +23,15 @@ function Promise(executor) {
         // 2.设置对象结果值(PromiseResult)
         self.PromiseResult=data
     }
-    // 同步调用[执行器函数]
-    executor(resolve,reject)
+
+    try {
+        // 同步调用[执行器函数]
+        executor(resolve,reject)
+    } catch (error) {
+        // 修改promise对象状态为[失败]
+        reject(error)
+    }   
+   
 }
 
 // 添加then()

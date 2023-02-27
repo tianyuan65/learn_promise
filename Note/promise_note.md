@@ -358,6 +358,9 @@
             * 在构造函数中声明resolve函数和reject函数，值得注意的是，这两个函数都是实参，都是独立的函数，可以自由命名，**但是为了防止混淆，还是该写啥写啥(这是给自己说的，记住了！！！)**
         * 3. resolve与reject代码实现
             * 众所周知，这两个函数有两个属性，PromiseState和PromiseResult，需要给这两个函数各自设置promise对象改变状态时，需要调用其中哪一个函数，并输出相对应的状态和结果。在此处需要注意的是，使用this来添加属性的时候，要格外留意this指向的是谁，在此处this指向的是Window，所以需要保存一下实例对象的this值，```const self=this;```，这样在resolve/reject函数被调用的时候，对象的状态和结果值才不会是初始状态和初始结果值
+        * 4. 抛出异常改变状态
+            * 在promise对象中抛出一个错误，想要正常输出抛出错误后的promise对象的状态和结果值，就需要在Promise构造函数中调用/执行trycatch函数，将同步调用执行器函数的方法移入。在catch中需要修改promise对象的状态为失败，在此调用reject，且promise对象中抛出的数据(```throw 'Err'```中的Err)就是promise对象失败的结果值，这个结果值会被传递给参数error(就是catch的参数位置上的那个)，所以最终在设置结果的时候，把error交给reject就可以了```reject(error)```
+                * ![抛出异常改变状态后输出的对象状态和对象结果值](images/%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8%E6%94%B9%E5%8F%98%E7%8A%B6%E6%80%81.PNG)
 
 
 ## 总结

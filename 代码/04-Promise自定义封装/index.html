@@ -13,7 +13,9 @@
             // 没有硬性要求和构造函数里的两个函数名保持一致，但为了不混淆，建议我自己还是乖乖该写啥就写啥
         let p=new Promise((resolve,reject)=>{
             // resolve('OK')
-            reject('error')
+            // reject('error')
+            // 抛出异常
+            throw 'Err'
         })
         console.log(p);
 
