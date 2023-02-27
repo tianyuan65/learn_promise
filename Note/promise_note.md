@@ -206,35 +206,47 @@
                         })
                       ```
                     * ![状态改变后，对应的回调会依次执行，但若状态没有改变，对应的回调就不会执行](images/%E7%8A%B6%E6%80%81%E6%94%B9%E5%8F%98%E5%90%8E%E4%B8%8E%E4%B9%8B%E5%AF%B9%E5%BA%94%E7%9A%84%E5%9B%9E%E8%B0%83%E9%83%BD%E4%BC%9A%E6%89%A7%E8%A1%8C.PNG)
-            * 3. 改变promise状态和指定回调函数(用then()或catch())谁先谁后？
+            * 3. 改变promise状态(以resolve()为例)和指定回调函数(用then()或catch()为例)谁先谁后？
                 * 1) 都有可能，正常情况下是先指定回调再改变状态，但也可以先改变状态再指定回调
                 * 2) 如何先改状态再指定回调？
-                    * ① 在执行器中直接调用resolve()/reject()
+                    * ① 当执行器函数当中的任务是同步任务的时候，在执行器中直接调用resolve()/reject()
                         * ```
+                            console.log(1);
                             let p= new Promise((resolve,reject)=>{
+                                console.log(2);
                                 resolve('OK')
+                                console.log(3);
                             })
+                            console.log(4);
                             p.then(value=>{
+                                console.log(5);
                                 console.log(value);
                             },reason=>{
 
                             })
                           ```
+                        * ![先该状态，再指定回调](images/%E5%85%88%E6%94%B9%E7%8A%B6%E6%80%81%EF%BC%8C%E5%90%8E%E6%8C%87%E5%AE%9A%E5%9B%9E%E8%B0%83.PNG)
                     * ② 延迟更长时间才调用then()，可以给then方法添加一个定时器
                 * 3) 如何先指定回调再改变状态？(当使用promise时这种情况是居多的)
                     * 在执行器((resolve,reject)=>{})中设置一个异步任务(例如：setTimeout)，在异步任务中调用resolve()/reject()的时候就会先指定回调，后改变状态
                     * ```
+                        console.log(1);
                         let p= new Promise((resolve,reject)=>{
-                            setTimeout(()=>{
+                            console.log(2);
+                            // setTimeout(()=>{
                                 resolve('OK')
-                            },1000)
+                                console.log(3);
+                            // },1000)
                         })
+                        console.log(4);
                         p.then(value=>{
+                            console.log(5);
                             console.log(value);
                         },reason=>{
 
                         })
                       ```
+                    * ![先指定回调，后盖状态](images/%E5%85%88%E6%8C%87%E5%AE%9A%E5%9B%9E%E8%B0%83%EF%BC%8C%E5%90%8E%E6%94%B9%E7%8A%B6%E6%80%81.PNG)
                 * 4) 什么时候才能得到数据？(翻译：then()中的回调函数什么时候执行？)
                     * ① 如果先指定的回调，那当状态发生改变时，回调函数就会调用，得到数据
                         * 也就是当在执行器中，有一个异步任务的时候，回调的执行时机是，等异步任务中的resolve()/reject()调用完以后，再去执行回调函数，并处理成功或失败的结果
@@ -351,4 +363,4 @@
 ## 总结
 * Promise是一个构造函数，所以可以对其进行对象的实例化，所以可以```const p=new Promise()```这样使用。而Promise在实例化的时候需要接收一个参数，这个参数是函数类型的值，且这个当参数的函数还有两个形参，分别是resolve和reject
 * 后续想要使用promise，不需要对每一个方法进行手动封装，可以借助 util.promisify 方法，将原来的回调函数风格的方法转变成promise风格的函数
-* 
+* 先按照代码的顺序执行一遍，再根据异步任务里对象的状态决定调用相对应的回调函数

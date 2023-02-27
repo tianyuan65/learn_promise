@@ -8,13 +8,18 @@
 </head>
 <body>
     <script>
+        console.log(1);
         let p= new Promise((resolve,reject)=>{
+            console.log(2);
             setTimeout(()=>{
                 resolve('OK')
+                console.log(3);
             },1000)
         })
+        console.log(4);
         p.then(value=>{
-            console.log(value);
+            console.log(5);
+            // console.log(value);
         },reason=>{
 
         })
