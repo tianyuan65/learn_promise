@@ -365,6 +365,103 @@
                 * ![注销引入的Promise构造函数](images/%E6%B3%A8%E9%94%80%E5%BC%95%E5%85%A5Promise%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%90%8E.PNG)
                 * 图里可见，PromiseState和PromiseResult被两个中括号包裹，为什么？
                     * 两个中括号表明，这个属性是这个对象内置的，是对象内部的，这些属性无法通过js代码直接对其进行操作
+        * 5. 状态只能修改一次
+            * 对象里就算同时调用两个方法也只会调用其中之一，也就是对象的结果状态只能由pending被修改为fulfilled或rejected也就是写前面的那个会被调用
+        * 6. then方法执行回调
+            * Promise.prototype.then=function(){}中的then方法，是由实例化的promise对象调用的.所以在这个函数内部的this就是指向实例对象p(就是实例化的promise对象)的。
+            * 成功或失败的判断条件是，promise实例对象的结果值，就是PromiseState为fulfilled或rejected。
+            * 框架文件当中调用的promise对象的then方法里的value回调函数的属性和输出的结果值是传递给了形参onResolved。同理，reason回掉函数的属性和输出的结果值传递给了形参onRejected。当onResolved和onRejected作为函数被调用的时候，里面需要传递实参。实参是什么？
+                * 实参是回调函数根据promise对象的状态输出的结果值(不论成功的或失败的)，所以实参的位置上传入的就应该是promise对象成功或失败的结果值，成功的结果值被存在实例对象的PromiseResult属性中
+                * ![成功](images/then%E6%96%B9%E6%B3%95%E6%89%A7%E8%A1%8C%E5%9B%9E%E8%B0%83-%E6%88%90%E5%8A%9F.PNG)
+                * ![失败](images/then%E6%96%B9%E6%B3%95%E6%89%A7%E8%A1%8C%E5%9B%9E%E8%B0%83-%E5%A4%B1%E8%B4%A5.PNG)
+                * ![抛出错误](images/then%E6%96%B9%E6%B3%95%E6%89%A7%E8%A1%8C%E5%9B%9E%E8%B0%83-%E6%8A%9B%E5%87%BA%E9%94%99%E8%AF%AF.PNG)
+        * 7. 异步任务then方法实现
+            * 当有内置的引入的Promise构造函数的代码存在的时候，实例化Promise对象的执行器函数内添加一个异步任务(也就是定时器函数)的话，会发现下面的then方法中回调函数无法调用并输出成功或失败的结果值，为啥呢？
+                * 代码在从上往下执行过程中，resolve函数没有执行，因为它需要等1秒后才可以执行(因为它在异步任务里，异步任务是另一条任务线了)，同步代码不会等待它。然后就会执行then方法，promise对象在调用then方法之前它的状态一直没有改变，一直是初始化的pending状态，所以在promise对象进入then方法之中，对状态进行判断的时候，因不满足条件，无法进入任何一个判断中.
+            * 所以在then方法中需要保存回调函数，以便于在构造函数中的resolve/reject函数里能够调用成功/失败的回调(因为promise的状态不确定，所以在then方法当中无法执行value/reason这样的回调)。
+                * **保存回调函数。**
+                    * 在then方法中调用一个回调函数，用来判断pending的状态，当promise对象的状态为pending时，在其中保存回调函数。(就是对应value和reason回调的onResolved和onRejected，并且命名为this.callback)
+                * **在构造函数中的resolve/reject函数里能够调用成功/失败的回调**
+                    * 在构造函数里声明一个命名为```this.callback```的属性，其属性值为一个空的对象，接着在resolve和reject函数中调用各自的回调函数，并在其中传递成功或失败的结果值，最后在控制台被呈现时，结果值会在刷新页面一秒后输出
+                        * ```
+                            if(self.callback.onResolved/onRejected){
+                                self.callback.onResolved/onRejected(data)
+                            }
+                          ```
+                        * ![成功](images/%E7%94%A8then%E6%96%B9%E6%B3%95%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1-%E6%88%90%E5%8A%9F.PNG)
+                        * ![失败](images/%E7%94%A8then%E6%96%B9%E6%B3%95%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1-%E5%A4%B1%E8%B4%A5.PNG)
+                        * ![抛出错误](images/%E7%94%A8then%E6%96%B9%E6%B3%95%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1-%E6%8A%9B%E5%87%BA%E9%94%99%E8%AF%AF.PNG)
+        * 8. 指定多个回调
+            * 当在框架文件中多次调用then方法，就会指定多个回调函数。没有内置的Promise构造函数的引入的话，就会依次调用回调函数并输出设置的结果值。但如果引入了内置的Promise构造函数的话，写在最后的回调函数会把前面执行的回掉函数的结果覆盖掉。就像我写的代码里，只会在弹框中输出，写在前面的，需要在控制台中输出的内容不会呈现。所以要解决这个问题，想要把两次调用then方法的回调都要保存起来，而不是后面的覆盖掉前面的，就需要做些不同的操作。
+                * 首先，将原先用来在then方法中保存回调函数的，命名为callback的属性，改名为callbacks，并把结构改成数组的形式，```this.callbacks=[]```。其次，在then方法中保存回掉函数的方式改为 .push()，这一步的意思是，当执行第一个then方法的时候，把两个回调函数，往onResolved和onRejected中压，执行第二个then方法时亦然，不会覆盖掉前一个被保存的回调函数。(题外话：在框架文件中的最后，控制台输出p，就是promise对象，它的状态依然是pending，结果值为null，但因为设置callbacks为数组，所以展开之后会发现callbacks里有两个数组，就是两次then方法被调用后，保存的两次，共两组回调函数，成功的和失败的都有)
+                * 最后，在构造函数中的resolve和reject函数内部，需要对callbacks进行遍历，item是一个对象，它的结构是被保存在onResolved/onRejected中的两个回调函数，所以两次then方法中的回调都会执行，并且将结果值以不同的方式输出
+                    * ![成功](images/%E6%8C%87%E5%AE%9A%E5%A4%9A%E4%B8%AA%E5%9B%9E%E8%B0%83-%E6%88%90%E5%8A%9F%E7%BB%93%E6%9E%9C.PNG)
+                    * ![失败](images/%E6%8C%87%E5%AE%9A%E5%A4%9A%E4%B8%AA%E5%9B%9E%E8%B0%83-%E5%A4%B1%E8%B4%A5%E7%BB%93%E6%9E%9C.PNG)
+                * ![虽然叫异步任务回调的执行简略图，单页适用于这个部分](images/%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1%E5%9B%9E%E8%B0%83%E7%9A%84%E6%89%A7%E8%A1%8C%E7%AE%80%E7%95%A5%E5%9B%BE.PNG)
+        * 9. 同步任务then方法返回结果
+            * 标题是什么意思？意思是在执行器函数当中直接通过调用resolve()/reject()/throw来改变状态，此时对then方法的返回结果做实现
+                * 首先，设置result为then方法中回调函数的返回结果，```const res=p.then(value=>{},reason=>{}```(复习：then方法的返回结果是由它指定的回调函数的结果决定的，根据代码的话就是，回调函数的结果决定res的结果值是什么)。因为他很方法的返回结果是由它指定的回调函数的结果决定的，那就会有以下两种情况，回调函数中返回的结果是非Promise的结果，那就是成功的；在回调函数中返回的结果是一个新的Promise对象，那么这个结果由新的Promise的结果决定
+                * 目前要做到的是根据指定的回调函数的执行结果来改变promise对象的状态(就是js文件的then方法中添加的那个new Promise)。所以其次，在js文件的then方法中返回一个新的Promise之后，在对象状态是成功的判断里，调用成功的回调函数的步骤内部，获取回调函数的执行结果```let result=onResolved(this.PromiseResult)```。
+                    * 随后进入执行结果是否为Promise对象的判断中，
+                        * ```
+                            if(result instanceof Promise){
+                                // 如果是Promise类型的对象
+                                result.then(v=>{
+                                    resolve(v)
+                                },r=>{
+                                    reject(r)
+                                })
+                            }else{
+                                // 如果不是Promise对象，则结果的对象状态为成功
+                                resolve(result)
+                            }
+                          ```
+                        * 如果res结果不是Promise对象，结果的对象状态为成功，到时res的状态就为成功；
+                            * ![返回结果为非promise对象，并没有指定结果值](images/%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C%E4%B8%BA%E9%9D%9Epromise%E5%AF%B9%E8%B1%A1.PNG)
+                            * ![返回结果为非promise对象，指定结果值为字符串](images//%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C%E6%98%AF%E9%9D%9Epromise%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%AF%B9%E8%B1%A1%E4%B9%8B%E8%BF%94%E5%9B%9E%E5%AD%97%E7%AC%A6%E4%B8%B2.PNG)
+                        * 如果res结果是Promise对象(那就会导致js文件里result就是Promise对象)，那result就可以调用then方法，result的状态如果是成功的那就调用v回调函数，result的状态是成功的，整体的then方法的结果也就是成功的；result失败则调用r回调函数
+                            * ![返回结果为promise类型的对象，且成功](images/%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C%E4%B8%BApromise%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%AF%B9%E8%B1%A1%E4%B8%94%E6%88%90%E5%8A%9F.PNG)
+                            * ![返回结果为promise类型的对象，且成功](images/%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C%E4%B8%BApromise%E5%AF%B9%E8%B1%A1%E4%BD%86%E5%A4%B1%E8%B4%A5.PNG)
+                        * **特殊情况：抛出异常**
+                            * 如果是抛出异常，那就是调用失败的回调，这种情况前几课讲了就是用```try{}catch(error){}```
+                                * ```
+                                    return new Promise((resolve,reject)=>{
+                                        // 调用回调函数  PromiseState
+                                        if(this.PromiseState==='fulfilled'){
+                                            try{
+                                                // 获取回调函数的执行结果
+                                                let result=onResolved(this.PromiseResult)
+                                                // 判断执行结果是否为Promise对象
+                                                if(result instanceof Promise){
+                                                    // 如果是Promise类型的对象
+                                                    result.then(v=>{
+                                                        resolve(v)
+                                                    },r=>{
+                                                        reject(r)
+                                                    })
+                                                }else{
+                                                    // 如果不是Promise对象，则结果的对象状态为成功
+                                                    resolve(result)
+                                                }
+                                            }catch(error){
+                                                reject(error)
+                                            }
+                                        }
+                                        if(this.PromiseState==='rejected'){
+                                            onRejected(this.PromiseResult)
+                                        }
+                                        // 判断pending状态
+                                        if(this.PromiseState==='pending'){
+                                            // 保存回调函数
+                                            this.callbacks.push({
+                                                onResolved:onResolved,
+                                                onRejected:onRejected
+                                            })
+                                        }
+                                    })
+                                  ```
+                                * ![抛出异常](images/%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8.PNG)
+                
 
 
 ## 总结
