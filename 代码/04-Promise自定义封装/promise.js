@@ -61,7 +61,9 @@ function Promise(executor) {
 // console.log(this);  //Window
 // 添加then()
 Promise.prototype.then=function(onResolved,onRejected){
+    const self=this
     return new Promise((resolve,reject)=>{
+        // console.log(self);  //Promise
         // 调用回调函数  PromiseState
         if(this.PromiseState==='fulfilled'){
             try{
@@ -89,10 +91,50 @@ Promise.prototype.then=function(onResolved,onRejected){
         }
         // 判断pending状态
         if(this.PromiseState==='pending'){
+            // console.log(self);  //Promise
             // 保存回调函数
             this.callbacks.push({
-                onResolved:onResolved,
-                onRejected:onRejected
+                // 把成功的回调取出，保存，准备在resolve()函数中执行
+                onResolved:function(){
+                    try{
+                        // 执行成功的回调函数
+                        let result=onResolved(self.PromiseResult)
+                        // 判断获取的函数的执行结果是否为Promise实例对象
+                        if(result instanceof Promise){
+                            result.then(v=>{
+                                // 在此调用resolve的原因是要把返回的promise对象的状态设置为成功(就是需要上面return new Promise的resolve)
+                                resolve(v);
+                            },r=>{
+                                reject(r)
+                            })
+                        }else{
+                            // 若不是Promise实例对象，就是成功的，直接调用resolve
+                            resolve(result)
+                        }
+                    }catch(error){
+                        reject(error)
+                    }
+                },
+                onRejected:function(){
+                    try{
+                        // 执行失败的回调函数
+                        let result=onRejected(self.PromiseResult)
+                        // 判断获取的函数的执行结果是否为Promise实例对象
+                        if(result instanceof Promise){
+                            result.then(v=>{
+                                // 在此调用resolve的原因是要把返回的promise对象的状态设置为成功(就是需要上面return new Promise的resolve)
+                                resolve(v);
+                            },r=>{
+                                reject(r)
+                            })
+                        }else{
+                            // 若不是Promise实例对象，就是成功的，直接调用resolve
+                            resolve(result)
+                        }
+                    }catch(error){
+                        reject(error)
+                    }    
+                }
             })
         }
     })
