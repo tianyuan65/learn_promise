@@ -461,10 +461,18 @@
                                     })
                                   ```
                                 * ![抛出异常](images/%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8.PNG)
-                
+        * 10. 异步任务then方法返回结果
+            * 就是在执行器函数当中添加一个异步任务，并对then方法的返回结果做实现
+            * 添加了异步任务，当Promise实例化对象完成之后，p对象的状态依然是pending的状态，所以这个pending状态的promise对象会进入是否是pending状态的判断中。在这个代码段中不会调用resolve或reject中的任何一个，这样输出的结果状态一定是pending，结果值一定是undefined。最终回调函数是在构造函数的resolve/reject函数中执行的，所以，在目前的情况下，不能单纯地在保存回调函数的步骤调用回调函数(就是框架里的value和reason)，需要把成功的回调取出，保存，并在后面执行成功或失败的回调。```onResolved/onRejevted:function(){}```
+            * 在```onResolved/onRejevted:function(){}```这个函数里要执行成功/失败的回调函数。如何执行？因为回调函数onResolved已经在前面的步骤保存了，所以可以直接在这个函数里调用```onResolved/onRejevted()```，并且把成功/失败的结果放进去，成功/失败的结果就是当前实例对象(很显然就是上面返回的新的Promise)当中的PromiseResult的值```onResolved/onRejevted(self.PromiseResult)```，在控制台中可以看到执行回调后输出的内容。但是显而易见PromiseState一直是pending状态，想要改变状态就需要onResolved/onRejevted()这个函数的执行结果来决定。获取onResolved/onRejevted()这个函数的执行结果,```let result=onResolved(self.PromiseResult)```。随后进入获取的函数的执行结果是否为Promise实例对象的判断中，如果是Promise实例对象，那它就可以执行then方法，then方法中就会有两个它的回调函数(在此为防止混淆，两个回调函数名为v和r)，若成功```resolve(v)```(在此调用resolve的原因是要把返回的promise对象的状态设置为成功(就是需要上面return new Promise的resolve))；若失败```reject(r)```。在控制台查看，PromiseState是fulfilled，PromiseResult为undefined，若在框架文件的then方法中返回其他类型的值，PromiseResult的值就会是那个其他类型的值。前提是刷新页面一秒后，打开看，因为这是异步任务。
+                * ![返回的状态值，这个是抛出错误的，成功的改一下就行](images/%E8%BF%94%E5%9B%9E%E5%80%BC.PNG)
+            * 异步任务中，框架文件里，then方法中的失败的回调函数返回的PromiseResult的值是undefined，所以then方法返回的那个Promise对象(res)的状态变成了成功，也就是刚执行完then方法返回的结果状态值一定是pending，等异步任务执行完之后res的状态值才会变为成功或失败。抛出异常的情况的话，在js文件里保存好的回调函数里使用try catch的方法，此时结果值为rejected，状态值为抛出的值(意思就是我写了啥，它就是啥，不懂的话看完代码运行)。
+                * ![执行失败回调略序](images/%E5%A4%B1%E8%B4%A5%E4%BA%86%E6%80%8E%E4%B9%88%E6%89%A7%E8%A1%8C.PNG)
+            
 
 
 ## 总结
 * Promise是一个构造函数，所以可以对其进行对象的实例化，所以可以```const p=new Promise()```这样使用。而Promise在实例化的时候需要接收一个参数，这个参数是函数类型的值，且这个当参数的函数还有两个形参，分别是resolve和reject
 * 后续想要使用promise，不需要对每一个方法进行手动封装，可以借助 util.promisify 方法，将原来的回调函数风格的方法转变成promise风格的函数
 * 先按照代码的顺序执行一遍，再根据异步任务里对象的状态决定调用相对应的回调函数
+* 因为在reject回调函数中返回的结果值是undefined，所以then方法返回的那个promise的状态变成了成功。但是最开始进入then方法中的时候，返回的结果状态还是pending，然后等状态修改完之后，才把res对象的状态改为了成功
