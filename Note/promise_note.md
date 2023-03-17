@@ -468,6 +468,19 @@
                 * ![返回的状态值，这个是抛出错误的，成功的改一下就行](images/%E8%BF%94%E5%9B%9E%E5%80%BC.PNG)
             * 异步任务中，框架文件里，then方法中的失败的回调函数返回的PromiseResult的值是undefined，所以then方法返回的那个Promise对象(res)的状态变成了成功，也就是刚执行完then方法返回的结果状态值一定是pending，等异步任务执行完之后res的状态值才会变为成功或失败。抛出异常的情况的话，在js文件里保存好的回调函数里使用try catch的方法，此时结果值为rejected，状态值为抛出的值(意思就是我写了啥，它就是啥，不懂的话看完代码运行)。
                 * ![执行失败回调略序](images/%E5%A4%B1%E8%B4%A5%E4%BA%86%E6%80%8E%E4%B9%88%E6%89%A7%E8%A1%8C.PNG)
+        * 11. then方法的完善与优化
+            * 到此为止会发现，js文件里，then方法中，判断Promise实例对象状态的代码重复，过于冗余，所以需要对它们进行简化封装。
+            * 在then方法中封装函数，名为callback，并贴上重复的代码。需要注意的是，根据在框架文件里执行的执行器函数不同，在then方法中调用的回调函数也有所不同，所以需要传递名为type的参数，在进入Promise实例对象的状态的判断时，就可以直接调用callback函数，里面传递需要执行的回调。同步和异步呈现的效果是一样的，唯一的区别就是异步会在规定时间后呈现，在规定时间前打开Promise，其状态值必定是pending
+                * 1) 同步：```callback(onResolved/onRejected)```
+                * 2) 异步：
+                    * ```
+                        onResolved/onRejected:function(){
+                            callback(onResolved/onRejected)
+                        }
+                      ```
+                    * ![效果图：成功](images/%E6%95%88%E6%9E%9C%E5%9B%BE_resolve().PNG)
+                    * ![效果图：失败](images/%E6%95%88%E6%9E%9C%E5%9B%BE_reject().PNG)
+
             
 
 
