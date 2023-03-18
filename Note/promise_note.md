@@ -482,6 +482,10 @@
                     * ![效果图：失败](images/%E6%95%88%E6%9E%9C%E5%9B%BE_reject().PNG)
         * 12. catch方法与异常穿透
             * catch方法，用来指定失败的回调函数，针对异常穿透的问题，需要在js文件中另添加一个catch方法。形参传递的是失败的回调函数，在其中返回地then方法里是undefined和失败的回调函数
+        * 13. Promise.resolve封装
+            * 小复习：Promise.resolve方法，会返回一个Promise实例对象，它的状态由传入的值决定，若传入的参数是非Promise类型的数据，那它的状态就是成功，且成功的结果值为传入的参数；若传入的参数是一个Promise类型的数据，那返回的结果就由传入的Promise对象的状态和结果决定
+            * 根据复习的resolve方法，Promise实例对象的状态值和结果值，由传入的参数是何类型的数据决定，参数是非Promise类型的数据，状态值为fulfilled，结果值为传入的值；参数是Promise类型的数据，则由新传入的Promise对象的状态和结果决定。
+            * 若Promise.resolve方法中封装一个Promise.resolve方法，那Promise实例对象的状态值必为fulfilled，结果值为被封装的resolve方法里传入的参数。
 
             
 
