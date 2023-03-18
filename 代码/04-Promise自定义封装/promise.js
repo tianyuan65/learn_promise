@@ -128,7 +128,7 @@ Promise.prototype.catch=function (onRejected) {
     return this.then(undefined,onRejected)
 }
 
-// 添加resolve方法(这个resolve方法是属于Promise函数对象的，不属于其实例对象)
+// 添加resolve方法(这个resolve方法是属于Promise函数对象的，不属于其实例对象，其作用为快速创建Promise对象，并将基本数据进行封装)
 Promise.resolve=function(value){
     // 返回promise对象
     return new Promise((resolve,reject)=>{
@@ -142,5 +142,12 @@ Promise.resolve=function(value){
             // 状态设置为成功
             resolve(value)
         }
+    })
+}
+
+// 添加reject方法(属性与作用同上)
+Promise.reject=function(reason) {
+    return new Promise((resolve,reject)=>{
+        reject(reason)
     })
 }

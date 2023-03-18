@@ -486,6 +486,20 @@
             * 小复习：Promise.resolve方法，会返回一个Promise实例对象，它的状态由传入的值决定，若传入的参数是非Promise类型的数据，那它的状态就是成功，且成功的结果值为传入的参数；若传入的参数是一个Promise类型的数据，那返回的结果就由传入的Promise对象的状态和结果决定
             * 根据复习的resolve方法，Promise实例对象的状态值和结果值，由传入的参数是何类型的数据决定，参数是非Promise类型的数据，状态值为fulfilled，结果值为传入的值；参数是Promise类型的数据，则由新传入的Promise对象的状态和结果决定。
             * 若Promise.resolve方法中封装一个Promise.resolve方法，那Promise实例对象的状态值必为fulfilled，结果值为被封装的resolve方法里传入的参数。
+        * 14. Promise.reject封装
+            * 小复习：大致属性与作用与resolve方法相同，不同之处在与，reject方法返回的结果永远是失败的Promise
+            * 由复习内容可知，reject方法内传入的参数为新的Promise类型的数据，即使新的Promise实例对象的状态为成功，但最终返回的肯定是失败的结果。
+                * ```
+                    const p=Promise.reject('Error')
+                    const p2=Promise.reject(new Promise((resolve,reject)=>{
+                        resolve('OK?')
+                    }))
+
+                    console.log(p);
+                    console.log(p2);
+                  ```
+                * ![上面代码呈现](images/reject%E6%96%B9%E6%B3%95%E5%B0%81%E8%A3%85.PNG)
+            * 13&14小结：相对于resolve方法，reject方法被添加到js文件的步骤更加简短。resolve方法中需要判断传入的参数为Promise类型的数据时，返回的是否为成功的结果。reject方法不必想太多，不管里面传入了什么类型的参数，结果肯定是失败。
 
             
 
