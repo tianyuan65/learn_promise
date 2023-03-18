@@ -480,6 +480,8 @@
                       ```
                     * ![效果图：成功](images/%E6%95%88%E6%9E%9C%E5%9B%BE_resolve().PNG)
                     * ![效果图：失败](images/%E6%95%88%E6%9E%9C%E5%9B%BE_reject().PNG)
+        * 12. catch方法与异常穿透
+            * catch方法，用来指定失败的回调函数，针对异常穿透的问题，需要在js文件中另添加一个catch方法。形参传递的是失败的回调函数，在其中返回地then方法里是undefined和失败的回调函数
 
             
 

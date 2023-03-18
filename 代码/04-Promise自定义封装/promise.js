@@ -62,6 +62,16 @@ function Promise(executor) {
 // 添加then()
 Promise.prototype.then=function(onResolved,onRejected){
     const self=this
+    // 判断回调函数参数
+    if(typeof onRejected !== 'function'){
+        onRejected=reason=>{
+            throw reason
+        }
+    }
+    if(typeof onResolved !== 'function'){
+        onResolved=value=>value
+        // value=>{return value}
+    }
     return new Promise((resolve,reject)=>{
         // console.log(self);  //Promise
         // 封装函数
@@ -111,4 +121,9 @@ Promise.prototype.then=function(onResolved,onRejected){
     })
     // console.log(this);  //Promise
     
+}
+
+// 添加catch()
+Promise.prototype.catch=function (onRejected) {
+    return this.then(undefined,onRejected)
 }
