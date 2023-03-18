@@ -535,7 +535,26 @@
                         })
                     }
                   ```
+        * 16. Promise.race封装
+            * 小复习：返回一个新的promise，第一个完成的promise的结果状态就是最终的结果状态。简单来说，谁先改变状态，谁就改变race方法的返回结果，无论状态是成功还是失败，谁先改变，就输出谁
+            * js文件中添加race方法，返回的新Promise实例对象内，进行遍历。新Promise实例对象，也就是promises中哪一个Promise对象先改变状态，就是新Promise实例对象返回的结果。在有异步任务的情况下，最终返回的结果不一定是result数组内写在前面的那一个Promise。
+                * ```
+                    let p1=new Promise((resolve,reject)=>{
+                        setTimeout(()=>{
+                            resolve('OK')
+                        })
+                    })
+                    let p2=Promise.resolve('Success')
+                    // let p2=Promise.reject('歪了？！！')
+                    let p3=Promise.resolve('出了出了！！！')
 
+                    // 调用race方法
+                    const result=Promise.race([p1,p2,p3])
+                    console.log(result);
+                  ```
+                * ![同步race封装](images/%E5%90%8C%E6%AD%A5race%E5%B0%81%E8%A3%85.PNG)
+                * ![异步成功race封装](images/%E5%BC%82%E6%AD%A5race%E5%B0%81%E8%A3%85_fulfilled.PNG)
+                * ![异步失败race封装](images/%E5%BC%82%E6%AD%A5race%E5%B0%81%E8%A3%85_rejected.PNG)
             
 
 

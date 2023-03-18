@@ -181,3 +181,18 @@ Promise.all=function(promises){
         }
     })
 }
+
+// 添加race方法
+Promise.race=function(promises){
+    return new Promise((resolve,reject)=>{
+        for (let i = 0; i < promises.length; i++) {
+            promises[i].then(v=>{
+                // 修改返回结果的状态为成功
+                resolve(v)
+            },r=>{
+                // 修改返回结果的状态为失败
+                reject(r)
+            })
+        }
+    })
+}
