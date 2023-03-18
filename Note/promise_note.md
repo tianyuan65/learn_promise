@@ -8,12 +8,12 @@
     * 2.1 Promise是什么？
         * 2.1.1 理解
             * 1. 抽象表达：
-                * 1) Promise是一门新的技术(ES6规范)
-                * 2) Promise是JS中进行异步编程的*新解决方案*
+                * 1. Promise是一门新的技术(ES6规范)
+                * 2. Promise是JS中进行异步编程的*新解决方案*
                     * 备注：旧方案是单纯使用回调函数
             * 2. 具体表达：
-                * 1) 从语法上来说：Promise是一个构造函数
-                * 2) 从功能上来说：Promise对象用来封装一个异步操作并可以获取其成功/失败的结果值
+                * 1. 从语法上来说：Promise是一个构造函数
+                * 2. 从功能上来说：Promise对象用来封装一个异步操作并可以获取其成功/失败的结果值
             * 异步编程
                 * fs文件操作
                     * fs是Node.js下面的一个模块，可以对计算机的磁盘进行读写操作
@@ -67,19 +67,19 @@
         * 2.3.1 API
             * 1. Promise构造函数：Promise(executor){}
                 * 可以通过new Promise()来实例化对象，实例化之后需要接收一个参数，这个参数的类型：
-                    * 1) executor函数：执行器 (resolve,reject)=>{}
-                    * 2) resolve函数：内部定义成功时我们调用的函数 value=>{}
-                    * 3) reject函数：内部定义失败时我们调用的函数 reason=>{}
+                    * 1. executor函数：执行器 (resolve,reject)=>{}
+                    * 2. resolve函数：内部定义成功时我们调用的函数 value=>{}
+                    * 3. reject函数：内部定义失败时我们调用的函数 reason=>{}
                     * 说明：executor会在Promise内部立即同步调用，异步操作在执行器中执行
             * 2. Promise.prototype.then方法：(onResolved,onRejected)=>{}
-                * 1) onResolved函数：成功的回调函数 (value)=>{}
-                * 2) onRejected函数：失败的回调函数 (reason)=>{}
+                * 1. onResolved函数：成功的回调函数 (value)=>{}
+                * 2. onRejected函数：失败的回调函数 (reason)=>{}
                 * 说明：指定用于得到成功value的成功回调和用于得到失败reason的失败回调返回一个新的promise对象
             * 3. Promise.prototype.catch方法：(onRejected)=>{}  --专门用来指定失败的回调函数
-                * 1) onRejected函数：失败的回调函数 (reason)=>{}
+                * 1. onRejected函数：失败的回调函数 (reason)=>{}
                 * 说明：then()的语法糖，相当于：then(undefined,onRejected)
             * 4. Promise.resolve方法：(value)=>{}
-                * 1) value：成功的数据或promise对象
+                * 1. value：成功的数据或promise对象
                 * 说明：
                     * 返回一个成功/失败的promise对象，它的作用就是快速得到promise对象，并且能封装一个值，还能把这个值转化为promise对象
                     * 相较于then/catch方法，resolve方法是属于Promise这个函数对象的，不属于实例对象
@@ -112,7 +112,7 @@
                               ```
                             * ![上述代码失败结果处理后的输出](images/%E5%AF%B9%E4%BA%8E%E5%A4%B1%E8%B4%A5%E7%BB%93%E6%9E%9C%E7%9A%84%E5%A4%84%E7%90%86.PNG)
             * 5. Promise.reject方法：(reason)=>{}
-                * 1) reason：失败的原因
+                * 1. reason：失败的原因
                 * 说明：返回一个失败的promise对象
                 * reject方法和上面的resolve方法一样，属于Promise这个函数对象，不属于实例对象。作用为快速返回一个失败的promise对象，并封装一个值，把这个值转化为promise对象
                 * 在这个方法里传递什么类型的值，返回的都是失败的结果(就是报错，但是会告诉你传递的值)
@@ -127,14 +127,14 @@
                     * ![无视传递的值类型，一律返回失败的结果](images/%E6%97%A0%E8%A7%86%E4%BC%A0%E5%85%A5%E7%9A%84%E5%80%BC%E7%B1%BB%E5%9E%8B%EF%BC%8C%E7%BB%9F%E7%BB%9F%E8%BF%94%E5%9B%9E%E5%A4%B1%E8%B4%A5%E7%9A%84%E7%BB%93%E6%9E%9C.PNG)
                     * 上述代码和图片中比较特殊的就是p3对象，p3对象的reject方法中传递的参数是promise对象，并且这个做参数的promise对象执行的是其成功的参数。但最后的结果并不会有所变化，依旧输出失败的结果(结果为Promise，就是做参数的那个Promise)，PromiseState依旧是rejected，
             * 6. Promise.all方法：(promises)=>{}
-                * 1) promises：包含n个promise的数组
-                * 说明：返回一个新的promise(其状态由数组中的promise的状态，也就是由promises来决定)，只有所有的promise否成功才成功，只要有一个失败了就直接返回失败，而且成功的结果是每一个promise对象他们成功的结果组成的数组，而失败的结果是这个数组当中失败的那一个对象的结果
-                * 数组里的每一个promise对象都是成功，则返回的promise对象才是成功，但凡合格数组里有一个是失败的对象，最后也只返回失败的对象的结果
+                * 1. promises：包含n个promise的数组
+                * 说明：返回一个新的promise(其状态由数组中的promise的状态，也就是由promises来决定)，只有所有的promise都成功才成功，只要有一个失败了就直接返回失败，而且成功的结果是每一个promise对象他们成功的结果组成的数组，而失败的结果是这个数组当中失败的那一个对象的结果
+                * 数组里的每一个promise对象都是成功，则返回的promise对象才是成功，但凡数组里有一个是失败的对象，最后也只返回失败的对象的结果
                     * ```
                         let p1=new Promise((resolve,reject)=>{
                             resolve('ok')
                         })
-                        let p2=Promise.reject('歪了歪了')
+                        let p2=Promise.resolve('Success')
                         let p3=Promise.resolve('出了出了！！！！！')
 
                         const result=Promise.all([p1,p2,p3])
@@ -154,7 +154,7 @@
                       ```
                     * ![看上面的代码，这回返回的是失败，且返回结果是结果为失败的对象的结果](images/%E6%95%B0%E7%BB%84%E9%87%8C%E6%9C%89%E7%BB%93%E6%9E%9C%E4%B8%BA%E5%A4%B1%E8%B4%A5%E7%9A%84%E5%AF%B9%E8%B1%A1%20%E5%85%B7%E4%BD%93%E7%9C%8BPromiseResult.PNG)
             * 7. Promie.race方法：(promise)=>{}
-                * 1) promises：包含n个promise的数组
+                * 1. promises：包含n个promise的数组
                 * 说明：返回一个新的promise，第一个完成的promise的结果状态就是最终的结果状态，谁先改变状态，谁就改变race方法的返回结果
                     * ```
                         let p1=new Promise((resolve,reject)=>{
@@ -184,9 +184,9 @@
                     * ![添加一个异步任务，一秒后才输出，此时第一个改变状态的就不是p1](images/%E6%B7%BB%E5%8A%A0%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1%E5%90%8E%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%94%B9%E5%8F%98%E7%8A%B6%E6%80%81%E7%9A%84%E5%B0%B1%E4%B8%8D%E6%98%AFp1%E4%BA%86.PNG)
         * 2.3.2 promise的几个关键问题
             * 1. 如何改变promise的状态？
-                * 1) resolve(value)：如果当前是pending就会变为resolved
-                * 2) reject(reason)：如果当前是pending就会变为rejected
-                * 3) 抛出异常：如果当前是pending就会变为rejected
+                * 1. resolve(value)：如果当前是pending就会变为resolved
+                * 2. reject(reason)：如果当前是pending就会变为rejected
+                * 3. 抛出异常：如果当前是pending就会变为rejected
             * 2. 一个promise指定多个成功/失败回调函数，都会调用吗？(翻译：如果使用then方法为一个promise对象指定多个回调，这些回调是不是都会执行？)
                 * *这里的指定回调用谁指定？ then方法*
                 * 当promise改变为对应状态时会调用(如果为一个promise对象指定多个回调，当它的状态改变之后，与之对应的回调函数就都会执行)
@@ -207,8 +207,8 @@
                       ```
                     * ![状态改变后，对应的回调会依次执行，但若状态没有改变，对应的回调就不会执行](images/%E7%8A%B6%E6%80%81%E6%94%B9%E5%8F%98%E5%90%8E%E4%B8%8E%E4%B9%8B%E5%AF%B9%E5%BA%94%E7%9A%84%E5%9B%9E%E8%B0%83%E9%83%BD%E4%BC%9A%E6%89%A7%E8%A1%8C.PNG)
             * 3. 改变promise状态(以resolve()为例)和指定回调函数(用then()或catch()为例)谁先谁后？
-                * 1) 都有可能，正常情况下是先指定回调再改变状态，但也可以先改变状态再指定回调
-                * 2) 如何先改状态再指定回调？
+                * 1. 都有可能，正常情况下是先指定回调再改变状态，但也可以先改变状态再指定回调
+                * 2. 如何先改状态再指定回调？
                     * ① 当执行器函数当中的任务是同步任务的时候，在执行器中直接调用resolve()/reject()
                         * ```
                             console.log(1);
@@ -227,7 +227,7 @@
                           ```
                         * ![先该状态，再指定回调](images/%E5%85%88%E6%94%B9%E7%8A%B6%E6%80%81%EF%BC%8C%E5%90%8E%E6%8C%87%E5%AE%9A%E5%9B%9E%E8%B0%83.PNG)
                     * ② 延迟更长时间才调用then()，可以给then方法添加一个定时器
-                * 3) 如何先指定回调再改变状态？(当使用promise时这种情况是居多的)
+                * 3. 如何先指定回调再改变状态？(当使用promise时这种情况是居多的)
                     * 在执行器((resolve,reject)=>{})中设置一个异步任务(例如：setTimeout)，在异步任务中调用resolve()/reject()的时候就会先指定回调，后改变状态
                     * ```
                         console.log(1);
@@ -247,14 +247,14 @@
                         })
                       ```
                     * ![先指定回调，后盖状态](images/%E5%85%88%E6%8C%87%E5%AE%9A%E5%9B%9E%E8%B0%83%EF%BC%8C%E5%90%8E%E6%94%B9%E7%8A%B6%E6%80%81.PNG)
-                * 4) 什么时候才能得到数据？(翻译：then()中的回调函数什么时候执行？)
+                * 4. 什么时候才能得到数据？(翻译：then()中的回调函数什么时候执行？)
                     * ① 如果先指定的回调，那当状态发生改变时，回调函数就会调用，得到数据
                         * 也就是当在执行器中，有一个异步任务的时候，回调的执行时机是，等异步任务中的resolve()/reject()调用完以后，再去执行回调函数，并处理成功或失败的结果
                     * ② 如果先改变的状态，那当指定回调时，回调函数就会调用，得到数据
                         * 当在执行器中，直接调用resolve()的时候(就是同步任务的时候，看文件的话就是，03执行器里没有定时器的时候)，then方法在调用的时候就会执行回调函数，来处理成功或失败的结果
             * 4. promise.then()返回的新promise的结果状态由什么决定？
-                * 1) 简单表达：由then()指定的回调函数执行的结果决定
-                * 2) 详细表达：
+                * 1. 简单表达：由then()指定的回调函数执行的结果决定
+                * 2. 详细表达：
                     * ① 如果抛出异常，新promise变为rejected，reason为抛出的异常
                         * ![PromiseState:rejected,PromiseResult:写了啥就是啥](images/%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8%20new%20promiseState%3Drejected.PNG)
                     * ② 如果返回的是非promise的任意值，新promise变为resolved，value为返回的值
@@ -262,8 +262,8 @@
                     * ③ 如果返回的是另一个新promise，此promise的结果就会成为新promise的结果
                         * ![PromiseState:fulfilled/rejected,PromiseResult:写了啥就是啥](images/%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C%E6%98%AF%E6%96%B0%E7%9A%84promise.PNG)
             * 5. promise如何串联多个操作任务？
-                * 1) promise的then()返回结果是一个新的promise，可以开成then()的链式调用
-                * 2) 通过then的链式调用串连多个同步/异步任务
+                * 1. promise的then()返回结果是一个新的promise，可以开成then()的链式调用
+                * 2. 通过then的链式调用串连多个同步/异步任务
                 * ```
                     let p=new Promise((resolve,reject)=>{
                         setTimeout(()=>{
@@ -284,7 +284,7 @@
                 * *注释：为什么最后一个then方法中回调函数输出的结果是是undefined？*
                     * 看它上一个then方法中回调函数返回的结果是什么？没写，没写就是undefined，且undefined也不是一个promise类型的对象，所以上一个then方法返回结果就是一个成功的promise，成功的结果就是undefined。其原理就是then方法的返回结果是一个promise对象
             * 6. promise异常传透？
-                * 1) 当使用promise的then链式调用时，可以在最后指定失败的回调
+                * 1. 当使用promise的then链式调用时，可以在最后指定失败的回调
                     * ```
                         let p=new Promise((resolve,reject)=>{
                             setTimeout(()=>{
@@ -304,7 +304,7 @@
                         })
                       ```
                     * 异步任务中更改的状态会在最后的catch方法中作为结果输出，中间的环节不必指定失败的回调，只需在最后指定失败的回调，即可处理失败的结果，这就叫异常穿透。
-                * 2) 前面任何操作出了异常，都会传到最后失败的回调中处理
+                * 2. 前面任何操作出了异常，都会传到最后失败的回调中处理
                     * ```
                         let p=new Promise((resolve,reject)=>{
                             setTimeout(()=>{
@@ -326,8 +326,8 @@
                       ```
                     * 即便是在中间的环节(就是在某一个回调函数当中)出现错误，比如抛出错误/返回失败的promise，都不必管，只需在最后使用catch方法来实现对失败的结果的处理。 
             * 7. 中断promise链？
-                * 1) 当使用promise的then链式调用时，在中间中断，不再调用后面的回调函数
-                * 2) 办法：在回调函数中返回一个pending状态的promise
+                * 1. 当使用promise的then链式调用时，在中间中断，不再调用后面的回调函数
+                * 2. 办法：在回调函数中返回一个pending状态的promise
                 * ```
                     let p=new Promise((resolve,reject)=>{
                         setTimeout(()=>{
@@ -471,8 +471,8 @@
         * 11. then方法的完善与优化
             * 到此为止会发现，js文件里，then方法中，判断Promise实例对象状态的代码重复，过于冗余，所以需要对它们进行简化封装。
             * 在then方法中封装函数，名为callback，并贴上重复的代码。需要注意的是，根据在框架文件里执行的执行器函数不同，在then方法中调用的回调函数也有所不同，所以需要传递名为type的参数，在进入Promise实例对象的状态的判断时，就可以直接调用callback函数，里面传递需要执行的回调。同步和异步呈现的效果是一样的，唯一的区别就是异步会在规定时间后呈现，在规定时间前打开Promise，其状态值必定是pending
-                * 1) 同步：```callback(onResolved/onRejected)```
-                * 2) 异步：
+                * 1. 同步：```callback(onResolved/onRejected)```
+                * 2. 异步：
                     * ```
                         onResolved/onRejected:function(){
                             callback(onResolved/onRejected)
@@ -500,6 +500,41 @@
                   ```
                 * ![上面代码呈现](images/reject%E6%96%B9%E6%B3%95%E5%B0%81%E8%A3%85.PNG)
             * 13&14小结：相对于resolve方法，reject方法被添加到js文件的步骤更加简短。resolve方法中需要判断传入的参数为Promise类型的数据时，返回的是否为成功的结果。reject方法不必想太多，不管里面传入了什么类型的参数，结果肯定是失败。
+        * 15.Promise.all封装
+            * 小复习：返回一个新的promise，新的promise里是由多个promise组成的数组，若想使用all方法得到成功的结果，就需要数组内所有的Promise实例对象的结果都是成功的，但凡有一个结果为失败，最终得到的结果就是失败的，其失败的结果值为失败的Promise实例对象的结果值。
+            * 由复习内容可以延伸，在js文件中添加的all方法里，需要对多个Promise实例对象的结果进行遍历，来判断最终的结果是成功或是失败。需要注意的几点是：
+                * 1. 需要声明一个变量count，count进入遍历，当count的值等于数组的整体长度时，说明进入遍历的几个Promise实例对象的结果都是成功，可以存入到数组中，以便最后呈现。
+                * 2. 声明一个名为arr的空数组，里面会存入遍历成功的Promise实例对象，等所有的Promise实例对象遍历完成年后，被赋值到v中，```arr[i]=v```。随后进入判断，并修改状态。这里面把成功的Promise实例对象整合、赋值到v的步骤中，没有使用push方法。若使用push方法，当有异步任务，即使是同步任务的时候，会出现数组下标与既定顺序不符合的现象。使用赋值的方法，即使是有异步任务，也会严谨地把数组下标和既定顺序整理好。
+                * ```
+                    Promise.all=function(promises){
+                        // 声明变量
+                        let count=0
+                        // 这是存放成功结果的数组，在这个步骤肯定是空的，在下面遍历完都成功了就有东西了
+                        let arr=[]
+                        // 返回结果为promise对象
+                        return new Promise((resolve,reject)=>{
+                            // 遍历
+                            for (let i = 0; i < promises.length; i++) {
+                                // 
+                                promises[i].then(v=>{
+                                    // 在此步骤可得知对象的状态是成功
+                                    // 每一个promise对象都成功，才可执行resolve()
+                                    count++;
+                                    // 将当前promise对象成功的结果存入到数组中
+                                    arr[i]=v
+                                    // 当变量数值与数组的整体长度时，就表明这几个promise对象的结果都是成功，存入到数组中
+                                    if(count===promises.length){
+                                        // 修改状态
+                                        resolve(arr)
+                                    }
+                                },r=>{
+                                    reject(r)
+                                })
+                                
+                            }
+                        })
+                    }
+                  ```
 
             
 

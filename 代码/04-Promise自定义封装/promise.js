@@ -151,3 +151,33 @@ Promise.reject=function(reason) {
         reject(reason)
     })
 }
+
+// 添加all方法
+Promise.all=function(promises){
+    // 声明变量
+    let count=0
+    // 这是存放成功结果的数组，在这个步骤肯定是空的，在下面遍历完都成功了就有东西了
+    let arr=[]
+    // 返回结果为promise对象
+    return new Promise((resolve,reject)=>{
+        // 遍历
+        for (let i = 0; i < promises.length; i++) {
+            // 
+            promises[i].then(v=>{
+                // 在此步骤可得知对象的状态是成功
+                // 每一个promise对象都成功，才可执行resolve()
+                count++;
+                // 将当前promise对象成功的结果存入到数组中
+                arr[i]=v
+                // 当变量数值与数组的整体长度时，就表明这几个promise对象的结果都是成功，存入到数组中
+                if(count===promises.length){
+                    // 修改状态
+                    resolve(arr)
+                }
+            },r=>{
+                reject(r)
+            })
+            
+        }
+    })
+}
