@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>async与await结合发送AJAX</title>
+</head>
+<body>
+    <button id="btn">点击获取段子</button>
+    <script>
+        // axios
+        function sendAJAX(url) {
+            return new Promise((resolve,reject)=>{
+                resolve('哈哈哈哈哈，不好笑')
+            })
+
+            // 段子接口地址  https://www.youtube.com/
+            let btn=document.querySelector('#btn')
+            
+            btn.addEventListener('click',async function(){
+                // 获取段子信息
+                let joke=await sendAJAX('https://www.youtube.com/')
+                console.log(joke);
+            })
+        }
+    </script>
+</body>
+</html>
