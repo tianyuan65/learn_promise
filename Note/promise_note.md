@@ -602,6 +602,12 @@
                 * ![异步执行成功回调](images/%E5%BC%82%E6%AD%A5%E6%89%A7%E8%A1%8C%E7%9A%84%E5%9B%9E%E8%B0%83%E4%B8%BA%E6%88%90%E5%8A%9F.PNG)
                 * ![异步执行成功回调](images/%E5%BC%82%E6%AD%A5%E6%89%A7%E8%A1%8C%E7%9A%84%E5%9B%9E%E8%B0%83%E4%B8%BA%E5%A4%B1%E8%B4%A5.PNG)
 
+        * 18. class(类)封装
+            * 在js文件中创建一个名为Promise的组件，将各种方法添加到组件里
+                * constructor中传入参数executor，并添加基本的回调函数及新的Promise实例
+                * 添加then方法与catch方法
+                * resolve方法、reject方法、all方法、race方法，这四个方法前面需要街上static，因为这四个方法不是实例对象的方法，是属于Promise这个类，也就是构造函数对象的方法
+            * 与前面课上一样，同步任务、异步任务，甚至是调用resolve方法，都可以顺利执行，详细代码见**18-class版本封装.html及对应的js文件**。
 
 ## 总结
 * Promise是一个构造函数，所以可以对其进行对象的实例化，所以可以```const p=new Promise()```这样使用。而Promise在实例化的时候需要接收一个参数，这个参数是函数类型的值，且这个当参数的函数还有两个形参，分别是resolve和reject
