@@ -609,6 +609,23 @@
                 * resolve方法、reject方法、all方法、race方法，这四个方法前面需要街上static，因为这四个方法不是实例对象的方法，是属于Promise这个类，也就是构造函数对象的方法
             * 与前面课上一样，同步任务、异步任务，甚至是调用resolve方法，都可以顺利执行，详细代码见**18-class版本封装.html及对应的js文件**。
 
+* **第四章：async与await**
+    * 4.1 mdn文档
+    * 4.2 async函数
+        * 1. 函数的返回值为promise对象
+        * 2. promise对象的结果由async函数执行的返回值决定
+    * 4.3 await表达式
+        * 1. await右侧的表达式一般为promise对象，但也可以是其他的值
+        * 2. 如果表达式是promise对象，await返回的是promise成功的值
+        * 3. 如果表达式是其他值，直接将此值作为await的返回值
+    * 4.4 注意
+        * 1. await必须写在async函数中，但async函数中可以没有await
+        * 2. 如果await的promise失败了，就会抛出异常，需要通过try...catch捕获处理
+    * 总结：
+        * 1. async与await结合使用的过程中，看不到回调函数，这一点区别于promise的then方法与catch方法中需要调用执行回调函数。
+        * 2. 更加简洁，类似于同步函数调用的形式，但内部是在异步执行
+
+
 ## 总结
 * Promise是一个构造函数，所以可以对其进行对象的实例化，所以可以```const p=new Promise()```这样使用。而Promise在实例化的时候需要接收一个参数，这个参数是函数类型的值，且这个当参数的函数还有两个形参，分别是resolve和reject
 * 后续想要使用promise，不需要对每一个方法进行手动封装，可以借助 util.promisify 方法，将原来的回调函数风格的方法转变成promise风格的函数

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>async函数</title>
+</head>
+<body>
+    <script>
+        async function main(){
+            // 1. 若返回值是一个非Promise类型的数据
+            // return 'mhy,给点晶片'
+
+            // 2.若返回值是一个Promise对象
+            // return new Promise((resolve,reject)=>{
+            //     // resolve('OK')
+            //     reject('Error')
+            // })
+
+            // 3. 抛出异常
+            throw 'e'
+        }
+
+        let result=main()
+
+        console.log(result);
+    </script>
+</body>
+</html>
