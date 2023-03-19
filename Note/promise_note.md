@@ -555,7 +555,52 @@
                 * ![同步race封装](images/%E5%90%8C%E6%AD%A5race%E5%B0%81%E8%A3%85.PNG)
                 * ![异步成功race封装](images/%E5%BC%82%E6%AD%A5race%E5%B0%81%E8%A3%85_fulfilled.PNG)
                 * ![异步失败race封装](images/%E5%BC%82%E6%AD%A5race%E5%B0%81%E8%A3%85_rejected.PNG)
-            
+        * 17. 回调函数异步执行
+            * 回调函数指的是then方法指定的回调函数也就是value和reason，回调函数异步执行的意思就是指定的回调函数需要在另一条任务线上执行。如下代码，指定的回调函数就是异步执行的，只有内置文件，也就是框架文件时，呈现效果在代码下面
+                * ```
+                    let p1=new Promise((resolve,reject)=>{
+                        resolve('OK')
+                        console.log(111);
+                    })
+                    p1.then(value=>{
+                        console.log(222);
+                    })
+                    console.log(333);
+                  ```
+                * ![上面代码呈现效果](images/%E5%8F%AA%E6%9C%89%E5%86%85%E7%BD%AE%E6%9D%A1%E4%BB%B6%E6%97%B6%E5%BC%82%E6%AD%A5%E6%89%A7%E8%A1%8C%E7%9A%84%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0.PNG)
+            * 当框架文件中添加js文件之后，上面的代码不会是异步执行，所以需要在就是文件的then方法中的resolve和reject函数中添加异步任务，给经历遍历callbacks(被保存在onResolved和onRejected中的两个回调函数)包裹异步任务。如下第一个为框架文件，第二个和第三个为then方法中添加异步任务的回调和调用回调函数的具体代码，呈现效果在代码下面
+                * ```
+                    let p1=new Promise((resolve,reject)=>{
+                        // resolve('OK')
+                        reject('Error')
+                        console.log(111);
+                    })
+
+                    p1.then(value=>{
+                        console.log(222);
+                    },reason=>{
+                        console.log(444);
+                    })
+
+                    console.log(333);
+                  ```
+                * ```
+                    setTimeout(() => {
+                        self.callbacks.forEach(item=>{
+                            // 调用成功/失败的回调
+                            item.onResolved/onRejected(data)
+                        })
+                    });
+                  ```
+                * ```
+                     if(this.PromiseState==='fulfilled/rejected'){
+                        setTimeout(()=>{
+                            callback(onResolved/onRejected)
+                        })
+                    }
+                  ```
+                * ![异步执行成功回调](images/%E5%BC%82%E6%AD%A5%E6%89%A7%E8%A1%8C%E7%9A%84%E5%9B%9E%E8%B0%83%E4%B8%BA%E6%88%90%E5%8A%9F.PNG)
+                * ![异步执行成功回调](images/%E5%BC%82%E6%AD%A5%E6%89%A7%E8%A1%8C%E7%9A%84%E5%9B%9E%E8%B0%83%E4%B8%BA%E5%A4%B1%E8%B4%A5.PNG)
 
 
 ## 总结

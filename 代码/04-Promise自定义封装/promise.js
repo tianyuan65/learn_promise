@@ -21,11 +21,13 @@ function Promise(executor) {
         // if(self.callback.onResolved){
         //     self.callback.onResolved(data)
         // }
-        // 遍历callbacks，item是一个对象，它的结构是被保存在onRejected中的两个回调函数
-        self.callbacks.forEach(item=>{
-            // 调用成功的回调
-            item.onResolved(data)
-        })
+        // 遍历callbacks，item是一个对象，它的结构是被保存在onResolved中的回调函数
+        setTimeout(() => {
+            self.callbacks.forEach(item=>{
+                // 调用成功的回调
+                item.onResolved(data)
+            })
+        });
     }
 
     // 声明reject函数，在这里reject是个实参，是一个独立的函数，同样可以用任意名命名，只不过在下面使用时，要写成对应的名
@@ -41,11 +43,13 @@ function Promise(executor) {
         // if(self.callback.onRejected){
         //     self.callback.onRejected(data)
         // }
-        // 遍历callbacks，item是一个对象，它的结构是被保存在onRejected中的两个回调函数
-        self.callbacks.forEach(item=>{
-            // 调用失败的回调函数
-            item.onRejected(data)
-        })
+        // 遍历callbacks，item是一个对象，它的结构是被保存在onRejected中的回调函数
+        setTimeout(() => {
+            self.callbacks.forEach(item=>{
+                // 调用失败的回调函数
+                item.onRejected(data)
+            })   
+        });
     }
 
     try {
@@ -98,11 +102,14 @@ Promise.prototype.then=function(onResolved,onRejected){
         }
         // 调用回调函数  PromiseState
         if(this.PromiseState==='fulfilled'){
-            callback(onResolved)
+            setTimeout(()=>{
+                callback(onResolved)
+            })
         }
         if(this.PromiseState==='rejected'){
-            callback(onRejected)
-
+            setTimeout(()=>{
+                callback(onRejected)
+            })
         }
         // 判断pending状态
         if(this.PromiseState==='pending'){
