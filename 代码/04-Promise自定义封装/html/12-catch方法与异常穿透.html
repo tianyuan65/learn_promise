@@ -18,8 +18,11 @@
         })
 
         // 值传递
-        p.then()
-        .then(value=>{
+        p.then(value=>{
+            // console.log(111)
+            // throw 'Error'
+        }
+        ).then(value=>{
             console.log(222);
         }).then(value=>{
             console.log(333);

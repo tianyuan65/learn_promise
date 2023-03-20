@@ -470,7 +470,7 @@
                 * ![执行失败回调略序](images/%E5%A4%B1%E8%B4%A5%E4%BA%86%E6%80%8E%E4%B9%88%E6%89%A7%E8%A1%8C.PNG)
         * 11. then方法的完善与优化
             * 到此为止会发现，js文件里，then方法中，判断Promise实例对象状态的代码重复，过于冗余，所以需要对它们进行简化封装。
-            * 在then方法中封装函数，名为callback，并贴上重复的代码。需要注意的是，根据在框架文件里执行的执行器函数不同，在then方法中调用的回调函数也有所不同，所以需要传递名为type的参数，在进入Promise实例对象的状态的判断时，就可以直接调用callback函数，里面传递需要执行的回调。同步和异步呈现的效果是一样的，唯一的区别就是异步会在规定时间后呈现，在规定时间前打开Promise，其状态值必定是pending
+            * 在then方法中封装函数，名为callback，并贴上重复的代码。需要注意的是，根据在框架文件里执行的执行器函数不同，在then方法中调用的回调函数也有所不同，所以需要传递名为type的参数，在进入Promise实例对象的状态的判断时，就可以直接调用callback函数，里面传递需要执行的回调。同步和异步呈现的效果是一样的，唯一的区别就是异步会在规定时间后呈现，在规定时间前打开Promise，其状态值必定是pending。
                 * 1. 同步：```callback(onResolved/onRejected)```
                 * 2. 异步：
                     * ```
@@ -482,6 +482,47 @@
                     * ![效果图：失败](images/%E6%95%88%E6%9E%9C%E5%9B%BE_reject().PNG)
         * 12. catch方法与异常穿透
             * catch方法，用来指定失败的回调函数，针对异常穿透的问题，需要在js文件中另添加一个catch方法。形参传递的是失败的回调函数，在其中返回地then方法里是undefined和失败的回调函数
+            * 值传递：Promise多次调用then方法，在最后调用catch方法，用来捕捉并输出失败的回调和抛出错误的情况。当添加了异步任务，其中执行的无论是resolve还是reject，Promise的状态进入then方法时一定是pending，所以被保存的时候，它的值不是函数，是undefined。此时会进入判断onRejected/onResolved是否是函数的判断中，不是函数，是undefined的情况下进入判断。异步任务时间过去后，彼时它的状态根据框架文件中执行器函数的执行会有所改变，所以在判断中改变状态的onRejected/onResolved执行对应的回调函数。状态为成功即调用成功的回调，并输出；失败则调用失败的回调，输出失败的结果。
+                * ```
+                    let p=new Promise((resolve,reject)=>{
+                        setTimeout(()=>{
+                            reject('OK')
+                            // resolve('Success')
+                        },1000)
+                    })
+                    // 值传递
+                    p.then()
+                    .then(value=>{
+                        console.log(222);
+                    }).then(value=>{
+                        console.log(333);
+                    }).catch(reason=>{
+                        console.warn(reason);
+                    })
+                  ```
+            * 异常穿透：Promise多次调用then方法，在最后调用catch方法，用来捕捉并输出失败的回调和抛出错误的情况。添加异步任务，其中执行的无论是resolve还是reject，Promise的状态进入then方法时一定是pending。在第一个then方法中抛出一个错误，它也不会立刻输出，会进入最后的catch方法中，最终在catch方法内输出抛出错误的结果
+                * ```
+                    let p=new Promise((resolve,reject)=>{
+                        setTimeout(()=>{
+                            reject('OK')
+                            // resolve('Success')
+                        },1000)
+                    })
+                    // 值传递
+                    p.then(value=>{
+                        console.log(111)
+                        throw 'Error'
+                    }
+                    ).then(value=>{
+                        console.log(222);
+                    }).then(value=>{
+                        console.log(333);
+                    }).catch(reason=>{
+                        console.warn(reason);
+                    })
+                  ```
+                * ![异常穿透](images/%E5%80%BC%E4%BC%A0%E9%80%92%2B%E5%BC%82%E5%B8%B8%E7%A9%BF%E9%80%8F%2Bcatch%E6%96%B9%E6%B3%95.PNG)
+                * ![异常穿透输出图片](images/%E5%BC%82%E5%B8%B8%E7%A9%BF%E9%80%8F%E8%BE%93%E5%87%BA%E5%9B%BE%E7%89%87.PNG)
         * 13. Promise.resolve封装
             * 小复习：Promise.resolve方法，会返回一个Promise实例对象，它的状态由传入的值决定，若传入的参数是非Promise类型的数据，那它的状态就是成功，且成功的结果值为传入的参数；若传入的参数是一个Promise类型的数据，那返回的结果就由传入的Promise对象的状态和结果决定
             * 根据复习的resolve方法，Promise实例对象的状态值和结果值，由传入的参数是何类型的数据决定，参数是非Promise类型的数据，状态值为fulfilled，结果值为传入的值；参数是Promise类型的数据，则由新传入的Promise对象的状态和结果决定。
