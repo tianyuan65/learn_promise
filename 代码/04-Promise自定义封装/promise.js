@@ -1,5 +1,6 @@
 // 声明构造函数
 function Promise(executor) {
+    this.p =0
     // 添加属性
     this.PromiseState='pending'
     this.PromiseResult=null
@@ -69,6 +70,7 @@ Promise.prototype.then=function(onResolved,onRejected){
     // 判断回调函数参数
     if(typeof onRejected !== 'function'){
         onRejected=reason=>{
+            console.log(this.p++);
             throw reason
         }
     }
